@@ -1,17 +1,17 @@
-1. Copy this directory to "feeds/luci/applications/luci-app-avrdude".
-2. update & install feeds
+Copy this directory to "feeds/luci/applications/luci-app-avrdude".
+
+Update and install feeds:
 
 ```bash
 ./scripts/feeds update luci
 ./scripts/feeds install -a -p luci
 ```
 
-The output message should be:
+make menuconfig:
 
-> Installing all packages from feed luci.
-> Installing package 'luci-app-avrdude' from luci
-
-3. make menuconfig
+```bash
+make menuconfig
+```
 
 Add luci-app-avrdude and kmod-usb-acm(for Arduino UNO R3):
 
@@ -29,8 +29,15 @@ Location:
         -> USB Support
 ```
 
-4. make
-5. Update firmware.
+make
+
+```bash
+make v=99
+```
+
+Update firmware.
+
+![Img](Img.png)
 
 This project is based on [使用OpenWRT路由远程给Arduino下载程序](https://www.geek-workshop.com/thread-5816-1-1.html).
 
