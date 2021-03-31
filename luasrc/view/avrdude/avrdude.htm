@@ -1,0 +1,133 @@
+<%#
+LuCI - Lua Configuration Interface
+
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008-2009 Jo-Philipp Wich <xm@subsignal.org>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+avrdude.htm 2013-08-26 by histamine
+-%>
+
+<%+header%>
+
+<h2><a id="content" name="content">Avrdude</a></h2>
+<h3>Upload</h3>
+
+<script language="javascript" type="text/javascript">
+function setDisplay(id, isDisplay)
+{
+    if(isDisplay == 0)
+    {
+        document.getElementById(id).style.display = "none";
+    }
+    else
+    {
+    	document.getElementById(id).style.display = "block";
+    }
+}
+
+function checkFormValid(isAlert)
+{
+    var x = document.forms["upload-form-name"]["image"].value;
+    if (x == null || x == "")
+    {
+        if (isAlert == 1)
+        {
+            alert("Please upload a hex file!");
+        }
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+function clearFrame()
+{
+    var doc = document.getElementById("resultIFrame");
+    if( doc.document ) {
+        document.resultIFrame.document.body.innerHTML = ""; //Chrome, IE
+    } else {
+        doc.contentDocument.body.innerHTML = ""; //FireFox
+    }
+}
+</script>
+
+<% if step == 1 then %>
+    <% if supported then %>
+    <form  name="upload-form-name" id="upload-form" target="result" onsubmit="return checkFormValid(1)" method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+    <p>
+        <%:Upload a hex file to flash arduino.%>
+    </p>
+    <div>
+        <%:Hex File%>:<br />
+        <input type="hidden" name="step" value="2" />
+        <input type="file" size="30" name="image" />
+        <br />
+        <br />
+        <br />
+        Serial Port:
+        <br />
+        <select name="tty_name" size="1">
+            <% for i = 0, 10, 1 do %>
+                <% local tty_name = "/dev/ttyUSB%u" % {i} %>
+                <% if nixio.fs.access(tty_name) then %>
+                    <option value="<%=tty_name%>"><%=tty_name%></option>
+                <% end %>
+            <% end %>
+            <% for i = 0, 10, 1 do %>
+                <% local tty_name = "/dev/ttyACM%u" % {i} %>
+                <% if nixio.fs.access(tty_name) then %>
+                    <option value="<%=tty_name%>"><%=tty_name%></option>
+                <% end %>
+            <% end %>
+            <% for i = 0, 10, 1 do %>
+                <% local tty_name = "/dev/ttyS%u" % {i} %>
+                <% if nixio.fs.access(tty_name) then %>
+                    <option value="<%=tty_name%>"><%=tty_name%></option>
+                <% end %>
+            <% end %>
+        </select>
+        <br />
+        <br />
+        <br />
+
+        <%:Arduino Board%>:
+        <br />
+        <select name="arduino_type" size="1">
+            <% for type, info in pairs(board_info) do %>
+                <% if type == "arduino_uno" then %>
+                    <option value="<%=type%>" selected="selected"><%=info.name%></option>
+                <% else %>
+                    <option value="<%=type%>"><%=info.name%></option>
+                <% end %>
+            <% end %>
+        </select>
+        <br />
+        <br />
+        <br />
+        <input class="cbi-button cbi-button-apply" type="submit" value="<%:Upload%>" onclick="if (checkFormValid(0)) {setDisplay('upload-form', 0);setDisplay('result-frame', 1);clearFrame();}" />
+    </div>
+    </form>
+    <div id="result-frame" style="display:none">
+    <button class="cbi-button" onclick="setDisplay('upload-form', 1);setDisplay('result-frame',0)">Back</button>
+    <br />
+    <br />
+    <iframe id="resultIFrame" name="result" sylte="border-color: #00FF00" border="1" frameborder="0" height="500" width="768"></iframe>
+    </div>
+    <% else %>
+        <div class="error"><%_ Sorry.
+            OpenWrt does not support avrdude on this platform.<br />
+            Install avrdude first! %></div>
+    <% end %>
+<% elseif step == 2 then %>
+
+<% end %>
+<%+footer%>
+
