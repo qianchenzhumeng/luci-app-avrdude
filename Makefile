@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Support for avrdude
-LUCI_DEPENDS:=+avrdude
+LUCI_DEPENDS:=+avrdude +kmod-usb-acm
 
 include ../../luci.mk
 
